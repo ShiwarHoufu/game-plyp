@@ -1,0 +1,21 @@
+# 依赖（通过 npm install 重新生成）
+node_modules/
+
+# 环境变量（含敏感信息，不要提交）
+.env
+.env.*
+!.env.example
+
+# 编辑器 / IDE 配置
+.trae/
+.vscode/
+.idea/
+
+# 项目内部文档（不同步到仓库）
+plans/
+changelogs/
+CLAUDE.md
+
+# 系统文件
+.DS_Store
+Thumbs.db

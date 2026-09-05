@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>碰了又碰</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- 启动画面 -->
+    <div id="startupScreen" class="startup-screen">
+        <!-- 棋子元素 -->
+        <div class="startup-chess chess-1"></div>
+        <div class="startup-chess chess-2"></div>
+        <div class="startup-chess chess-3"></div>
+        <div class="startup-chess chess-4"></div>
+        <div class="startup-chess chess-5"></div>
+        <div class="startup-chess chess-6"></div>
+        <div class="startup-chess chess-7"></div>
+        <div class="startup-content">
+            <h1 class="startup-title">碰了又碰</h1>
+            <p class="startup-hint">点击任意位置开始</p>
+        </div>
+    </div>
+
+    <div class="menu-container" id="menuContainer">
+        <button class="changelog-btn" onclick="showChangelog()">📋</button>
+        <button class="help-btn" onclick="showHelp()">❓</button>
+        <div class="menu-coins" id="menuCoinsDisplay" style="display: none;">
+            <span class="coin-icon">🪙</span>
+            <span id="menuCoinsValue">0</span>
+        </div>
+        <button class="login-btn" id="loginBtn" onclick="showAuthModal()">登录</button>
+        <div class="user-menu" id="userMenu">
+            <div class="user-menu-header">
+                <span id="userMenuUsername"></span>
+            </div>
+            <button class="user-menu-item" onclick="showStatsModal()">📊 查看战绩</button>
+            <button class="user-menu-item" onclick="showProfileModal()">👤 个人资料</button>
+            <button class="user-menu-item" onclick="showLogoutConfirmModal()">🚪 退出登录</button>
+        </div>
+        <div class="menu-container-wrapper">
+            <div class="menu-box">
+                <img src="assets/images/title.png" alt="碰了又碰" id="menuTitleImage">
+                <button class="menu-btn classic-btn" onclick="startGame('classic')" style="background-image: url('assets/images/menu-classic.png');"></button>
+            <button class="menu-btn skill-btn" onclick="startGame('skill')" style="background-image: url('assets/images/menu-skill.png');"></button>
+            <button class="menu-btn online-btn" onclick="startNetworkGame()" style="background-image: url('assets/images/menu-online.png');"></button>
+            </div>
+            <div class="menu-side-buttons">
+                <button class="shop-btn" id="shopBtn" onclick="showShopModal()"></button>
+                <button class="backpack-btn" id="backpackBtn" onclick="showBackpackModal()"></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="skill-selection-container" id="skillSelectionContainer" style="display: none;">
+    </div>
+
+    <div class="classic-prepare-container" id="classicPrepareContainer" style="display: none;">
+        <div class="skill-selection-content">
+            <div class="skill-selection-header">
+                <h2 class="preparation-title">对局设置</h2>
+            </div>
+            
+            <div class="available-skills" style="margin-bottom: 30px;">
+                <div class="prepare-option">
+                    <label for="pieceCount" style="font-size: 1.2em; margin-right: 20px;">棋子数量：</label>
+                    <select id="pieceCount" style="font-size: 1.1em; padding: 10px 15px;">
+                        <option value="2">2颗</option>
+                        <option value="3" selected>3颗</option>
+                        <option value="4">4颗</option>
+                        <option value="5">5颗</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="selected-skills-area">
+                <div class="player-selected-skills">
+                    <h3>玩家A颜色</h3>
+                    <div class="color-grid" id="player1ColorGrid">
+                        <div class="color-option selected" data-color="#ff4757" style="background-color: #ff4757;"></div>
+                        <div class="color-option" data-color="#d3d6d2" style="background-color: #d3d6d2;"></div>
+                        <div class="color-option" data-color="#3742fa" style="background-color: #3742fa;"></div>
+                        <div class="color-option" data-color="#ffa502" style="background-color: #ffa502;"></div>
+                        <div class="color-option" data-color="#8e44ad" style="background-color: #8e44ad;"></div>
+                        <div class="color-option" data-color="#1e90ff" style="background-color: #1e90ff;"></div>
+                        <div class="color-option" data-color="#2ed573" style="background-color: #2ed573;"></div>
+                        <div class="color-option" data-color="#ff6b81" style="background-color: #ff6b81;"></div>
+                        <div class="color-option" data-color="#1289a7" style="background-color: #1289a7;"></div>
+                        <div class="color-option" data-color="#f9ca24" style="background-color: #f9ca24;"></div>
+                    </div>
+                    <input type="hidden" id="player1Color" value="#ff4757">
+                </div>
+                
+                <div class="player-selected-skills">
+                    <h3>玩家B颜色</h3>
+                    <div class="color-grid" id="player2ColorGrid">
+                        <div class="color-option" data-color="#ff4757" style="background-color: #ff4757;"></div>
+                        <div class="color-option" data-color="#d3d6d2" style="background-color: #d3d6d2;"></div>
+                        <div class="color-option selected" data-color="#3742fa" style="background-color: #3742fa;"></div>
+                        <div class="color-option" data-color="#ffa502" style="background-color: #ffa502;"></div>
+                        <div class="color-option" data-color="#8e44ad" style="background-color: #8e44ad;"></div>
+                        <div class="color-option" data-color="#1e90ff" style="background-color: #1e90ff;"></div>
+                        <div class="color-option" data-color="#2ed573" style="background-color: #2ed573;"></div>
+                        <div class="color-option" data-color="#ff6b81" style="background-color: #ff6b81;"></div>
+                        <div class="color-option" data-color="#1289a7" style="background-color: #1289a7;"></div>
+                        <div class="color-option" data-color="#f9ca24" style="background-color: #f9ca24;"></div>
+                    </div>
+                    <input type="hidden" id="player2Color" value="#3742fa">
+                </div>
+            </div>
+            
+            <div class="skill-selection-footer" style="margin-top: 40px;">
+                <button class="back-to-menu-btn" onclick="backToClassicMenu()">返回菜单</button>
+                <button class="start-battle-btn" onclick="startClassicGame()">开始游戏</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="game-container" id="gameContainer" style="display: none;">
+        <div class="header-container">
+            <div class="left-buttons">
+                <button class="header-chat-btn" id="chatBtn" onclick="toggleChatPanel()" style="display: none;">💬</button>
+                <button class="header-back-btn" onclick="confirmBackToMenuFromGame()">返回菜单</button>
+                <button class="header-restart-btn" onclick="restartGame()">重新开始</button>
+                <div class="round-info">
+                    <span>回合数: </span>
+                    <span id="roundCount">1</span>
+                </div>
+            </div>
+            <div class="title-container">
+                <div class="game-hint" id="gameHint">请单击棋子进行选中！</div>
+                <div class="title-row">
+                    <img src="assets/images/title.png" alt="碰了又碰" class="game-title">
+                    <div class="energy-bar-container" id="chaosEnergyBarContainer">
+                        <div class="energy-bar horizontal" id="chaosEnergyBar">
+                            <div class="energy-fill" id="chaosEnergyFill"></div>
+                            <div class="energy-divider divider-1"></div>
+                            <div class="energy-divider divider-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="header-right-container">
+                <div class="global-skills-header">
+                    <div class="global-skill-wrapper player1">
+                        <div class="global-skill-name" id="player1GlobalSkillName">玩家A: 未选择</div>
+                        <button class="global-skill-btn" id="player1GlobalSkillButton" onclick="gameEngine.useGlobalSkill(1)">使用</button>
+                    </div>
+                    <div class="global-skill-wrapper player2">
+                        <div class="global-skill-name" id="player2GlobalSkillName">玩家B: 未选择</div>
+                        <button class="global-skill-btn" id="player2GlobalSkillButton" onclick="gameEngine.useGlobalSkill(2)">使用</button>
+                    </div>
+                </div>
+                <button class="use-skill-btn" id="useSkillButton" style="display: none;" onclick="gameEngine.useSelectedPieceSkill()">使用技能</button>
+            </div>
+        </div>
+        <div class="game-info">
+            <div class="player-info player1" id="player1Info">
+                <span>玩家A</span>
+                <span id="player1Count">3</span>
+            </div>
+            <div class="player-info player2" id="player2Info">
+                <span>玩家B</span>
+                <span id="player2Count">3</span>
+            </div>
+        </div>
+
+        <canvas id="gameCanvas" width="1250" height="660"></canvas>
+        <div class="power-bar-container" id="powerBarContainer">
+            <div class="power-bar player1" id="player1PowerBar"></div>
+            <div class="power-bar player2" id="player2PowerBar"></div>
+        </div>
+    </div>
+
+    <!-- 乱斗（4人）游戏容器 -->
+    <div class="chaos4-game-container" id="chaos4GameContainer" style="display: none;">
+        <div class="chaos4-left-panel">
+            <div class="chaos4-title-container">
+                <img src="assets/images/title.png" alt="乱斗（4人）" class="chaos4-title">
+                <div class="game-hint" id="chaos4GameHint">请单击棋子进行选中！</div>
+            </div>
+            <div class="chaos4-buttons">
+                <button class="header-back-btn" onclick="confirmBackToMenuFromGame()">返回菜单</button>
+                <button class="header-restart-btn" onclick="restartGame()" style="display: none;">重新开始</button>
+            </div>
+            <div class="round-info" style="display: none;">
+                <span>回合数: </span>
+                <span id="chaos4RoundCount">1</span>
+            </div>
+            <div class="chaos4-player-list">
+                <div class="chaos4-player" id="chaos4Player1">
+                    <span id="chaos4Player1Name">玩家1</span>
+                    <span class="piece-count" id="chaos4Player1Count">3</span>
+                </div>
+                <div class="chaos4-player" id="chaos4Player2">
+                    <span id="chaos4Player2Name">玩家2</span>
+                    <span class="piece-count" id="chaos4Player2Count">3</span>
+                </div>
+                <div class="chaos4-player" id="chaos4Player3">
+                    <span id="chaos4Player3Name">玩家3</span>
+                    <span class="piece-count" id="chaos4Player3Count">3</span>
+                </div>
+                <div class="chaos4-player" id="chaos4Player4">
+                    <span id="chaos4Player4Name">玩家4</span>
+                    <span class="piece-count" id="chaos4Player4Count">3</span>
+                </div>
+            </div>
+        </div>
+        <div class="chaos4-right-panel">
+            <canvas id="chaos4Canvas"></canvas>
+            <div class="power-bar-container" id="chaos4PowerBarContainer">
+                <div class="power-bar player1" id="chaos4Player1PowerBar"></div>
+                <div class="power-bar player2" id="chaos4Player2PowerBar"></div>
+                <div class="power-bar player3" id="chaos4Player3PowerBar"></div>
+                <div class="power-bar player4" id="chaos4Player4PowerBar"></div>
+            </div>
+            <div class="energy-bar-container" id="chaos4EnergyBarContainer">
+                <div class="energy-bar vertical" id="chaos4EnergyBar">
+                    <div class="energy-fill" id="chaos4EnergyFill"></div>
+                    <div class="energy-divider divider-1"></div>
+                    <div class="energy-divider divider-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 聊天面板 -->
+    <div class="chat-panel" id="chatPanel" style="display: none;">
+        <div class="chat-tabs">
+            <button class="chat-tab active" id="chatTabEmoji" onclick="switchChatTab('emoji')">表情</button>
+            <button class="chat-tab" id="chatTabText" onclick="switchChatTab('text')">文字</button>
+            <button class="chat-close" onclick="toggleChatPanel()">×</button>
+        </div>
+        <div class="chat-content">
+            <div class="chat-emoji-grid" id="chatEmojiGrid"></div>
+            <div class="chat-text-input" id="chatTextInput" style="display: none;">
+                <div class="chat-input-row">
+                    <input type="text" id="chatMessageInput" placeholder="输入消息..." maxlength="50">
+                    <button class="chat-send-btn" onclick="sendChatMessage()">发送</button>
+                </div>
+                <div class="chat-presets" id="chatPresets"></div>
+            </div>
+        </div>
+    </div>
+    
+
+
+    <div class="winner-modal" id="winnerModal">
+        <div class="winner-content">
+            <h2 id="winnerText">玩家1获胜！</h2>
+            <button class="restart-btn" id="playAgainBtn">再来一局</button>
+            <button class="back-btn" id="backToLobbyBtn">返回大厅</button>
+        </div>
+    </div>
+
+    <div class="winner-modal" id="settingsModal">
+        <div class="confirm-content">
+            <h2>游戏设置</h2>
+            <div class="settings-option">
+                <label for="terrainToggle">生成地形</label>
+                <div class="info-button-container">
+                    <div class="info-button">i</div>
+                    <div class="info-tooltip">每3回合在地图随机生成一段白色墙壁（最多8面）</div>
+                </div>
+                <input type="checkbox" id="terrainToggle">
+            </div>
+            <button class="confirm-btn" onclick="saveSettings()">保存</button>
+            <button class="cancel-btn" onclick="cancelSettings()">取消</button>
+        </div>
+    </div>
+
+    <div class="winner-modal" id="confirmModal">
+        <div class="confirm-content">
+            <h2>确认返回菜单？</h2>
+            <p>当前游戏进度将丢失</p>
+            <button class="confirm-btn" onclick="confirmBackToMenu()">确认</button>
+            <button class="cancel-btn" onclick="cancelBackToMenu()">取消</button>
+        </div>
+    </div>
+
+    <div class="winner-modal" id="restartModal">
+        <div class="restart-content">
+            <h2>确认重新开始？</h2>
+            <p>当前游戏进度将丢失</p>
+            <button class="restart-confirm-btn" onclick="confirmRestart()">确认</button>
+            <button class="restart-cancel-btn" onclick="cancelRestart()">取消</button>
+        </div>
+    </div>
+    
+    <div class="winner-modal" id="errorModal">
+        <div class="error-content">
+            <h2>错误提示</h2>
+            <p id="errorMessage">选择了重复的颜色！请重新选择</p>
+            <button class="error-confirm-btn" onclick="hideErrorModal()">确定</button>
+        </div>
+    </div>
+    
+    <div class="winner-modal" id="restartRequestModal">
+        <div class="confirm-content">
+            <h2>重新开始请求</h2>
+            <p id="restartRequestMessage">玩家A请求重新开始游戏</p>
+            <button class="confirm-btn" onclick="acceptRestartRequest()">接受</button>
+            <button class="cancel-btn" onclick="rejectRestartRequest()">拒绝</button>
+        </div>
+    </div>
+    
+    <div class="winner-modal" id="restartWaitingModal">
+        <div class="confirm-content">
+            <h2>等待中</h2>
+            <p>等待对方玩家响应...</p>
+        </div>
+    </div>
+    
+    <div class="winner-modal" id="skillPieceCountModal">
+        <div class="confirm-content">
+            <h2>请选择棋子数量</h2>
+            <div class="piece-count-options">
+                <button class="piece-count-btn" onclick="selectSkillPieceCount(3)">3颗</button>
+                <button class="piece-count-btn" onclick="selectSkillPieceCount(4)">4颗</button>
+            </div>
+            <button class="cancel-btn" onclick="hideSkillPieceCountModal()">取消</button>
+        </div>
+    </div>
+
+    <!-- 登录注册弹窗 -->
+    <div class="winner-modal" id="authModal">
+        <div class="auth-content">
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="loginTab" onclick="switchAuthTab('login')">登录</button>
+                <button class="auth-tab" id="registerTab" onclick="switchAuthTab('register')">注册</button>
+            </div>
+            <div class="auth-form-container">
+                <!-- 登录表单 -->
+                <form id="loginForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="loginUsername">用户名</label>
+                        <input type="text" id="loginUsername" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">密码</label>
+                        <input type="password" id="loginPassword" required>
+                    </div>
+                    <button type="submit" class="auth-submit-btn">登录</button>
+                </form>
+                <!-- 注册表单 -->
+                <form id="registerForm" class="auth-form" style="display: none;">
+                    <div class="form-group">
+                        <label for="registerUsername">用户名</label>
+                        <input type="text" id="registerUsername" required minlength="3" maxlength="50">
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">密码</label>
+                        <input type="password" id="registerPassword" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">邮箱（选填）</label>
+                        <input type="email" id="registerEmail">
+                    </div>
+                    <button type="submit" class="auth-submit-btn">注册</button>
+                </form>
+            </div>
+            <div class="auth-error" id="authError"></div>
+            <button class="auth-close-btn" onclick="hideAuthModal()">×</button>
+        </div>
+    </div>
+
+    <!-- 历史战绩弹窗 -->
+    <div class="winner-modal" id="statsModal">
+        <div class="stats-content">
+            <div class="stats-header">
+                <h2>📊 历史战绩</h2>
+                <button class="stats-close-btn" onclick="hideStatsModal()">×</button>
+            </div>
+            <div class="stats-body" id="statsBody">
+                <div class="stats-loading">加载中...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 历史战绩详情弹窗 -->
+    <div class="winner-modal" id="gameHistoryModal">
+        <div class="game-history-content">
+            <div class="game-history-header">
+                <h2 id="gameHistoryTitle">对局详情</h2>
+                <button class="stats-close-btn" onclick="hideGameHistoryModal()">×</button>
+            </div>
+            <div class="game-history-list" id="gameHistoryList">
+                <div class="stats-loading">加载中...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 退出登录确认弹窗 -->
+    <div class="winner-modal" id="logoutConfirmModal">
+        <div class="confirm-content">
+            <h2>确认退出登录？</h2>
+            <p>确定要退出当前账号吗？</p>
+            <button class="confirm-btn" onclick="confirmLogout()">确认</button>
+            <button class="cancel-btn" onclick="cancelLogout()">取消</button>
+        </div>
+    </div>
+
+    <!-- 个人资料弹窗 -->
+    <div class="winner-modal" id="profileModal">
+        <div class="auth-content">
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="profileTab" onclick="switchProfileTab('profile')">个人信息</button>
+                <button class="auth-tab" id="changePasswordTab" onclick="switchProfileTab('password')">修改密码</button>
+            </div>
+            <div class="auth-form-container">
+                <!-- 个人信息表单 -->
+                <form id="profileForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="profileUsername">用户名</label>
+                        <input type="text" id="profileUsername" required minlength="3" maxlength="50">
+                    </div>
+                    <button type="submit" class="auth-submit-btn">保存修改</button>
+                </form>
+                <!-- 修改密码表单 -->
+                <form id="changePasswordForm" class="auth-form" style="display: none;">
+                    <div class="form-group">
+                        <label for="currentPassword">当前密码</label>
+                        <input type="password" id="currentPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">新密码</label>
+                        <input type="password" id="newPassword" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">确认新密码</label>
+                        <input type="password" id="confirmPassword" required minlength="6">
+                    </div>
+                    <button type="submit" class="auth-submit-btn">修改密码</button>
+                </form>
+            </div>
+            <div class="auth-error" id="profileError"></div>
+            <button class="auth-close-btn" onclick="hideProfileModal()">×</button>
+        </div>
+    </div>
+
+    <div class="winner-modal" id="changelogModal">
+        <div class="changelog-content">
+            <div class="changelog-header">
+                <h2>更新日志</h2>
+                <button class="changelog-close-btn" onclick="hideChangelog()">×</button>
+            </div>
+            <div class="changelog-body">
+                <div class="changelog-sidebar" id="changelogSidebar"></div>
+                <div class="changelog-details" id="changelogDetails"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 新手帮助弹窗 -->
+    <div class="winner-modal" id="helpModal">
+        <div class="help-content">
+            <div class="help-header">
+                <h2>新手指南</h2>
+                <button class="help-close-btn" onclick="hideHelp()">×</button>
+            </div>
+            <div class="help-body">
+                <div class="help-sidebar" id="helpSidebar"></div>
+                <div class="help-details" id="helpDetails"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="winner-modal" id="networkModeSelectModal">
+        <div class="confirm-content">
+            <div class="modal-header-with-settings">
+                <h2>创建房间</h2>
+                <button class="settings-btn" id="createRoomSettingsBtn" onclick="showCreateRoomSettings()">⚙️</button>
+            </div>
+            <div class="room-name-input">
+                <label for="roomNameInput">房间名称</label>
+                <input type="text" id="roomNameInput" placeholder="请输入房间名称（选填）" maxlength="20">
+            </div>
+            <div class="mode-options">
+                <button class="mode-btn classic-mode-btn" onclick="selectNetworkMode('classic')">经典模式</button>
+                <button class="mode-btn skill-mode-btn" onclick="selectNetworkMode('skill')">技能模式</button>
+                <button class="mode-btn chaos-mode-btn" onclick="selectNetworkMode('chaos')">乱斗（2人）</button>
+                <button class="mode-btn chaos4-mode-btn" onclick="selectNetworkMode('chaos4')">乱斗（4人）</button>
+            </div>
+            <button class="cancel-btn" onclick="hideNetworkModeSelectModal()">取消</button>
+        </div>
+    </div>
+
+    <!-- 创建房间设置弹窗 -->
+    <div class="winner-modal" id="createRoomSettingsModal">
+        <div class="confirm-content">
+            <h2>对局设置</h2>
+            <div class="settings-option">
+                <label for="createRoomPieceCount">棋子数量</label>
+                <div class="info-button-container">
+                    <div class="info-button">i</div>
+                    <div class="info-tooltip">设置游戏中的棋子数量</div>
+                </div>
+                <select id="createRoomPieceCount" style="padding: 5px;">
+                    <option value="2">2子</option>
+                    <option value="3" selected>3子</option>
+                    <option value="4">4子</option>
+                    <option value="5">5子</option>
+                </select>
+            </div>
+            <div class="settings-option">
+                <label for="createRoomTerrainToggle">生成地形</label>
+                <div class="info-button-container">
+                    <div class="info-button">i</div>
+                    <div class="info-tooltip">每3回合在地图随机生成一段白色墙壁（最多8面）</div>
+                </div>
+                <input type="checkbox" id="createRoomTerrainToggle">
+            </div>
+            <button class="confirm-btn" onclick="hideCreateRoomSettings()">确定</button>
+        </div>
+    </div>
+    
+    <!-- 联网经典模式准备界面 -->
+    <div class="prepare-container" id="networkClassicPrepareContainer" style="display: none;">
+        <div class="prepare-content">
+            <div class="skill-selection-header">
+                <h2 class="preparation-title" id="prepareTitle">选择你的皮肤</h2>
+            </div>
+
+            <div class="selected-skills-area">
+                <div class="player-selected-skills">
+                    <h3>我的皮肤</h3>
+                    <div class="unified-skin-grid" id="unifiedSkinGrid">
+                        <!-- 默认颜色选项 + 已购买皮肤选项 -->
+                    </div>
+                    <input type="hidden" id="networkPlayerColor" value="#ff4757">
+                    <input type="hidden" id="networkPlayerSkinId" value="default">
+                </div>
+            </div>
+
+            <div class="skill-selection-footer" style="margin-top: 40px;">
+                <button class="start-battle-btn" id="networkClassicConfirmBtn" onclick="confirmNetworkClassicSettings()">确认</button>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <div class="network-lobby-container" id="networkLobbyContainer" style="display: none;">
+        <div class="network-lobby-content">
+            <div class="network-lobby-header">
+                <img src="assets/images/matching_title.png" alt="匹配大厅" class="matching-title-image">
+                <button class="back-to-menu-btn" onclick="backToMenu()">返回菜单</button>
+            </div>
+            
+            <div class="lobby-actions">
+                <button class="lobby-btn create-room-btn" onclick="createNetworkRoom()">创建房间</button>
+                <div class="join-room-section">
+                    <input type="text" id="roomIdInput" placeholder="输入房间ID" maxlength="8">
+                    <button class="lobby-btn join-room-btn" onclick="joinNetworkRoom()">加入房间</button>
+                </div>
+            </div>
+            
+            <div class="lobby-status">
+                <div id="connectionStatus" class="status-item">
+                    连接状态: <span id="statusText">未连接</span>
+                </div>
+                <div id="playerCount" class="status-item">
+                    在线玩家: <span id="onlineCount">0</span>
+                </div>
+            </div>
+            
+            <div class="room-list">
+                <h3>可加入房间</h3>
+                <div id="roomList" class="room-list-content">
+                    <!-- 房间列表将在这里动态生成 -->
+                    <p class="no-rooms">暂无可用房间</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="network-room-container" id="networkRoomContainer" style="display: none;">
+        <div class="network-room-content">
+            <div class="network-room-header">
+                <h2><span id="currentRoomName">房间</span> - <span id="currentRoomId">000000</span></h2>
+            </div>
+
+            <div class="room-players">
+                <h3>玩家列表</h3>
+                <div class="player-slots" id="playerSlotsContainer">
+                    <div class="player-slots-2p" id="playerSlots2P">
+                        <div class="player-slot-wrapper">
+                            <div class="player-slot" id="playerSlot1" data-slot="1">
+                                <span class="slot-status">等待中...</span>
+                            </div>
+                            <span class="slot-label">先手位</span>
+                        </div>
+                        <div class="player-slot-wrapper">
+                            <div class="player-slot" id="playerSlot2" data-slot="2">
+                                <span class="slot-status">等待中...</span>
+                            </div>
+                            <span class="slot-label">后手位</span>
+                        </div>
+                    </div>
+                    <div class="player-slots-4p" id="playerSlots4P" style="display: none;">
+                        <div class="player-slot-wrapper" id="slotWrapper1">
+                            <div class="player-slot" id="player4Slot1" data-slot="1">
+                                <span class="slot-status">等待中...</span>
+                            </div>
+                            <span class="slot-label">玩家1</span>
+                        </div>
+                        <div class="player-slot-wrapper" id="slotWrapper2">
+                            <div class="player-slot" id="player4Slot2" data-slot="2">
+                                <span class="slot-status">等待中...</span>
+                            </div>
+                            <span class="slot-label">玩家2</span>
+                        </div>
+                        <div class="player-slot-wrapper" id="slotWrapper3">
+                            <div class="player-slot" id="player4Slot3" data-slot="3">
+                                <span class="slot-status">等待中...</span>
+                            </div>
+                            <span class="slot-label">玩家3</span>
+                        </div>
+                        <div class="player-slot-wrapper" id="slotWrapper4">
+                            <div class="player-slot" id="player4Slot4" data-slot="4">
+                                <span class="slot-status">等待中...</span>
+                            </div>
+                            <span class="slot-label">玩家4</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="room-actions">
+                <button class="room-btn ready-btn" id="readyButton" onclick="toggleReady()">准备</button>
+                <button class="room-btn leave-btn" onclick="backToLobby()">返回大厅</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 共享模块 -->
+    <script src="shared/constants/GameConfig.js"></script>
+    <script src="shared/constants/MessageTypes.js"></script>
+    <script src="shared/utils/PositionCalculator.js"></script>
+    <script src="shared/utils/SkillLogic.js"></script>
+    <script src="shared/utils/GameState.js"></script>
+    <script src="shared/utils/PhysicsEngine.js"></script>
+    
+    <!-- 粒子动画脚本 -->
+    <script>
+        // 创建粒子容器
+        const particlesContainer = document.createElement('div');
+        particlesContainer.className = 'particles-container';
+        document.body.appendChild(particlesContainer);
+        
+        // 创建粒子
+        function createParticles() {
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                
+                // 随机大小
+                const size = Math.random() * 3 + 1;
+                
+                // 随机位置
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                
+                // 随机颜色
+                const colors = ['rgba(255, 71, 87, 0.5)', 'rgba(102, 126, 234, 0.5)', 'rgba(78, 205, 196, 0.5)'];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                // 随机动画持续时间
+                const duration = Math.random() * 20 + 10;
+                
+                // 随机延迟
+                const delay = Math.random() * 5;
+                
+                // 设置粒子样式
+                particle.style.position = 'absolute';
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.backgroundColor = color;
+                particle.style.borderRadius = '50%';
+                particle.style.left = x + '%';
+                particle.style.top = y + '%';
+                particle.style.animation = `particleFloat ${duration}s ease-in-out ${delay}s infinite`;
+                particle.style.boxShadow = `0 0 ${size * 2}px ${color}`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // 添加粒子动画关键帧
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = `
+            @keyframes particleFloat {
+                0%, 100% {
+                    transform: translateY(0px) translateX(0px);
+                    opacity: 0.3;
+                }
+                25% {
+                    transform: translateY(-20px) translateX(10px);
+                    opacity: 0.8;
+                }
+                50% {
+                    transform: translateY(10px) translateX(-15px);
+                    opacity: 0.5;
+                }
+                75% {
+                    transform: translateY(-15px) translateX(5px);
+                    opacity: 0.7;
+                }
+            }
+        `;
+        document.head.appendChild(styleSheet);
+        
+        // 页面加载完成后创建粒子
+        window.addEventListener('load', createParticles);
+    </script>
+    
+    <!-- 客户端模块 -->
+    <script src="js/core/ParticleSystem.js"></script>
+    <script src="js/core/Piece.js"></script>
+    <script src="js/core/Item.js"></script>
+    <script src="js/core/EventManager.js"></script>
+    <script src="js/core/GameEngine.js"></script>
+    <!-- 基础模式类 -->
+    <script src="js/modes/base/BaseMode.js"></script>
+    <script src="js/modes/base/LocalMode.js"></script>
+    <script src="js/modes/base/NetworkMode.js"></script>
+    <!-- 经典模式 -->
+    <script src="js/modes/classic/ClassicLocal.js"></script>
+    <script src="js/modes/classic/ClassicNetwork.js"></script>
+    <!-- 技能模式 -->
+    <script src="js/modes/skill/SkillLocal.js"></script>
+    <script src="js/modes/skill/SkillNetwork.js"></script>
+    <!-- 乱斗模式 -->
+    <script src="js/modes/chaos/ChaosNetwork.js"></script>
+    <script src="js/modes/chaos/Chaos4Network.js"></script>
+    <!-- 模式管理器 -->
+    <script src="js/modes/index.js"></script>
+    <!-- 新手教程数据 -->
+    <script src="js/ui/HelpData.js"></script>
+    <script src="js/ui/SkillSelectionUI.js"></script>
+    <script src="js/ui/UIManager.js"></script>
+    <script src="js/ui/index.js"></script>
+    <script src="js/ui/AuthUI.js"></script>
+    <script src="js/network/SocketClient.js"></script>
+    <script src="js/network/RoomHandler.js"></script>
+    <script src="js/network/GameSyncHandler.js"></script>
+    <script src="js/network/SkillSelectionHandler.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/network/NetworkManager.js"></script>
+
+    <!-- Socket.io 库 -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+
+    <!-- 商店和背包UI -->
+    <script src="js/ui/TrailPreview.js"></script>
+    <script src="js/ui/ShopUI.js"></script>
+    <script src="js/ui/BackpackUI.js"></script>
+</body>
+</html>

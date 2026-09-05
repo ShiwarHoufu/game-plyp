@@ -1,0 +1,29 @@
+{
+  "name": "pengpengqi",
+  "version": "1.0.0",
+  "description": "碰了又碰 - 在线对战游戏",
+  "main": "server/src/index.js",
+  "scripts": {
+    "start": "node server/src/index.js",
+    "dev": "cd server && npm run dev",
+    "install:server": "cd server && npm install"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": [
+    "game",
+    "multiplayer",
+    "websocket",
+    "canvas"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
