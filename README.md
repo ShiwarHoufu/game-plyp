@@ -250,4 +250,4 @@ npm run dev
 
 ## 许可证
 
-项目以 **MIT** 协议开源（见 `package.json`）。如需正式声明，可自行添加 `LICENSE` 文件。
+项目以 **MIT** 协议开源（见 `package.json`）。
